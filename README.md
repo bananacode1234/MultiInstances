@@ -11,7 +11,7 @@ This tool bypasses Roblox's single-instance limitation, allowing you to:
 ## How to use it
 
 1. Start the app
-2. Click "Toggle Mutex" or press Space to allow multiple instances
+2. Click the toggle button or press Space to allow multiple instances
 3. Launch Roblox as normal
 4. Launch additional Roblox windows as needed
 
