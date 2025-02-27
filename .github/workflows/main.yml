@@ -1,0 +1,64 @@
+name: Build .NET 9 Windows Forms App
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  build:
+    runs-on: windows-latest  # Windows is required for Windows Forms apps
+    
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal --configuration Release
+      
+    - name: Publish (framework-dependent single file)
+      run: dotnet publish -c Release -o ./publish-framework-dependent -p:PublishSingleFile=true --no-self-contained
+      
+    - name: Publish (self-contained single file)
+      run: dotnet publish -c Release -o ./publish-self-contained -p:PublishSingleFile=true --self-contained -r win-x64
+      
+    - name: Rename and prepare framework-dependent executable
+      run: |
+        mkdir ./zip-framework-dependent
+        copy ./publish-framework-dependent/MultiInstances.exe ./zip-framework-dependent/MultiInstances.exe
+      shell: cmd
+      
+    - name: Rename and prepare self-contained executable
+      run: |
+        mkdir ./zip-self-contained
+        copy ./publish-self-contained/MultiInstances.exe ./zip-self-contained/MultiInstances_SC.exe
+      shell: cmd
+      
+    - name: Create ZIP files
+      run: |
+        powershell Compress-Archive -Path ./zip-framework-dependent/MultiInstances.exe -DestinationPath ./MultiInstances.zip
+        powershell Compress-Archive -Path ./zip-self-contained/MultiInstances_SC.exe -DestinationPath ./MultiInstances_SC.zip
+      
+    - name: Upload framework-dependent ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: MultiInstances
+        path: ./MultiInstances.zip
+        
+    - name: Upload self-contained ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: MultiInstances_SC
+        path: ./MultiInstances_SC.zip
