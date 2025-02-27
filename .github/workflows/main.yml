@@ -2,7 +2,7 @@ name: Build .NET 9 Windows Forms App
 
 on:
   release:
-    types: [created, published]
+    types: [published]
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
