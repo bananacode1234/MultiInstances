@@ -5,6 +5,9 @@ on:
     types: [published]
   workflow_dispatch:  # Allows manual triggering of the workflow
 
+permissions:
+  contents: write  # This is required for actions/upload-release-asset
+
 jobs:
   build:
     runs-on: windows-latest  # Windows is required for Windows Forms apps
