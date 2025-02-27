@@ -6,7 +6,9 @@ namespace Instances
 {
     public class Program : Form
     {
+        private Label mainLabel;
         private Label statusLabel;
+        private Button toggleButton;
         private Mutex mutex;
         private bool isMutexAcquired;
 
@@ -14,13 +16,13 @@ namespace Instances
         {
             Text = "MultiInstances";
             Width = 250;
-            Height = 200;
+            Height = 225;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             ControlBox = true;
             MinimizeBox = false;
             MaximizeBox = false;
 
-            Label mainLabel = new Label()
+            mainLabel = new Label()
             {
                 Text = "MultiInstances\nby Matt\n\nPress space to toggle",
                 Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold),
@@ -39,8 +41,14 @@ namespace Instances
             };
             Controls.Add(statusLabel);
 
-            this.KeyDown += new KeyEventHandler(OnKeyDown);
-            this.Focus();
+            toggleButton = new Button()
+            {
+                Text = "Toggle",
+                Location = new System.Drawing.Point(25, 130)
+            };
+            toggleButton.Click += new EventHandler(ToggleButton_Click);
+            Controls.Add(toggleButton);
+            toggleButton.Focus();
 
             mutex = new Mutex(true, "ROBLOX_singletonMutex", out isMutexAcquired);
             
@@ -52,12 +60,9 @@ namespace Instances
             UpdateStatus();
         }
 
-        private void OnKeyDown(object? sender, KeyEventArgs e)
+        private void ToggleButton_Click(object? sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Space)
-            {
-                ToggleMutex();
-            }
+            ToggleMutex();
         }
 
         private void ToggleMutex()
@@ -92,17 +97,21 @@ namespace Instances
             {
                 statusLabel.Text = "Status: running";
                 statusLabel.ForeColor = System.Drawing.Color.Green;
+                toggleButton.Text = "Stop";
             }
             else
             {
                 statusLabel.Text = "Status: stopped";
                 statusLabel.ForeColor = System.Drawing.Color.Red;
+                toggleButton.Text = "Start";
             }
         }
 
         [STAThread]
         static void Main()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Program());
         }
     }
