@@ -1,10 +1,8 @@
 name: Build .NET 9 Windows Forms App
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  release:
+    types: [created, published]
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -36,15 +34,15 @@ jobs:
       
     - name: Rename and prepare framework-dependent executable
       run: |
-        mkdir ./zip-framework-dependent
-        copy ./publish-framework-dependent/MultiInstances.exe ./zip-framework-dependent/MultiInstances.exe
-      shell: cmd
+        mkdir -p zip-framework-dependent
+        cp ./publish-framework-dependent/MultiInstances.exe ./zip-framework-dependent/MultiInstances.exe
+      shell: bash
       
     - name: Rename and prepare self-contained executable
       run: |
-        mkdir ./zip-self-contained
-        copy ./publish-self-contained/MultiInstances.exe ./zip-self-contained/MultiInstances_SC.exe
-      shell: cmd
+        mkdir -p zip-self-contained
+        cp ./publish-self-contained/MultiInstances.exe ./zip-self-contained/MultiInstances_SC.exe
+      shell: bash
       
     - name: Create ZIP files
       run: |
@@ -62,3 +60,12 @@ jobs:
       with:
         name: MultiInstances_SC
         path: ./MultiInstances_SC.zip
+        
+    # Attach builds to the GitHub release
+    - name: Upload Release Assets
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./MultiInstances.zip
+          ./MultiInstances_SC.zip
