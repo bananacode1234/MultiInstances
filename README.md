@@ -20,11 +20,11 @@ The status will show green when multiple instances are allowed, and red when the
 ## Download options
 
 **Full version (recommended):**
-- Download `MultiInstances_SC.zip` from [Releases](https://github.com/bananacode1234/MultiInstances/releases)
+- Download `MultiInstances_SC.zip` (~100MB) from [Releases](https://github.com/bananacode1234/MultiInstances/releases)
 - Just extract and run - no installation needed
 
 **Smaller version:**
-- Download `MultiInstances.zip` from [Releases](https://github.com/bananacode1234/MultiInstances/releases)
+- Download `MultiInstances.zip` (~150KB) from [Releases](https://github.com/bananacode1234/MultiInstances/releases)
 - Requires [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0)
 - Good if you already have .NET installed
 
